@@ -1,0 +1,10 @@
+[package]
+name = "rust-rex-game"
+version = "0.1.0"
+edition = "2021"
+description = "Rust-Rex: a playable T-Rex-runner-style game (macroquad renderer + input) built on rust-rex-core."
+license = "MIT"
+
+[dependencies]
+macroquad = "0.4"
+rust-rex-core = { path = "../rust-rex-core" }

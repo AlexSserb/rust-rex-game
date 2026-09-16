@@ -1,0 +1,9 @@
+[package]
+name = "rust-rex-core"
+version = "0.1.0"
+edition = "2021"
+description = "Pure game logic for Rust-Rex, a T-Rex-runner-style game: physics, obstacles, collisions, difficulty ramping and distance tracking. No rendering dependencies."
+license = "MIT"
+
+[dependencies]
+rand = "0.8"
