@@ -8,7 +8,6 @@ use rust_rex_core::{GameStatus, World, PLAYER_X};
 
 const BACKGROUND: Color = Color::new(0.97, 0.97, 0.95, 1.0);
 const GROUND_COLOR: Color = Color::new(0.2, 0.2, 0.2, 1.0);
-const OBSTACLE_COLOR: Color = Color::new(0.16, 0.4, 0.16, 1.0);
 const TEXT_COLOR: Color = Color::new(0.15, 0.15, 0.15, 1.0);
 
 const GROUND_TICK_SPACING: f32 = 40.0;
@@ -24,6 +23,7 @@ const PLAYER_SPRITE_SCALE: f32 = 1.35;
 pub fn draw(
     world: &World,
     player_texture: &Texture2D,
+    obstacle_texture: &Texture2D,
     best_km: f32,
     screen_width: f32,
     screen_height: f32,
@@ -33,7 +33,7 @@ pub fn draw(
 
     draw_ground(world, screen_width, ground_y);
     draw_player(world, player_texture, ground_y);
-    draw_obstacles(world, ground_y);
+    draw_obstacles(world, obstacle_texture, ground_y);
     draw_hud(world, best_km, screen_width);
 
     if world.status == GameStatus::GameOver {
@@ -81,10 +81,23 @@ fn draw_player(world: &World, player_texture: &Texture2D, ground_y: f32) {
     );
 }
 
-fn draw_obstacles(world: &World, ground_y: f32) {
+fn draw_obstacles(world: &World, obstacle_texture: &Texture2D, ground_y: f32) {
     for obstacle in &world.obstacles {
-        let bounds = obstacle.bounds(ground_y);
-        draw_rectangle(bounds.x, bounds.y, bounds.w, bounds.h, OBSTACLE_COLOR);
+        // Each obstacle is one or two square crates stacked on the ground;
+        // every box is drawn as its own copy of the crate texture, sized to
+        // that box's own (square) bounds.
+        for rect in obstacle.box_bounds(ground_y) {
+            draw_texture_ex(
+                obstacle_texture,
+                rect.x,
+                rect.y,
+                WHITE,
+                DrawTextureParams {
+                    dest_size: Some(vec2(rect.w, rect.h)),
+                    ..Default::default()
+                },
+            );
+        }
     }
 }
 

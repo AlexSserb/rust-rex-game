@@ -1,7 +1,7 @@
 # Rust-Rex
 
 A small T-Rex-runner-style game (the offline dinosaur game from Chrome's
-"no internet" page), written in Rust. Jump cacti, don't get hit — the
+"no internet" page), written in Rust. Jump crates, don't get hit — the
 scroll speed ramps up gradually with distance (and caps out so it stays
 playable), and the score is the distance traveled, shown in kilometers.
 
@@ -15,10 +15,12 @@ This is a Cargo workspace with two crates:
   fully unit-tested in isolation.
 - `crates/rust-rex-game` — the playable binary. Uses [`macroquad`](https://docs.rs/macroquad)
   for the window, drawing and keyboard input, and drives
-  `rust-rex-core`'s `World::update` once per frame. The player sprite lives
-  at `crates/rust-rex-game/assets/player.png` and is embedded into the
-  binary at compile time (`include_bytes!`), so the game renders it
-  correctly no matter what directory it's launched from.
+  `rust-rex-core`'s `World::update` once per frame. Sprites live in
+  `crates/rust-rex-game/assets/` (`player.png`, `obstacle.png`) and are
+  embedded into the binary at compile time (`include_bytes!`), so the game
+  renders them correctly no matter what directory it's launched from. Each
+  obstacle is one or two square crates — `obstacle.png` drawn once or twice,
+  stacked — with sizes chosen independently per box.
 
 ## Play
 
@@ -26,7 +28,7 @@ This is a Cargo workspace with two crates:
 cargo run -p rust-rex-game
 ```
 
-- `Space` / `Up` — jump over a cactus
+- `Space` / `Up` — jump over a crate
 - `R` / `Enter` / `Space` — restart after game over
 
 Your best distance is saved to `rust_rex_highscore.txt` next to wherever

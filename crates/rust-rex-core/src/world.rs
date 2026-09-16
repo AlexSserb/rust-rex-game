@@ -196,8 +196,8 @@ mod tests {
         let mut world = World::new(4, 800.0, 250.0);
         world.obstacles.push(Obstacle {
             x: PLAYER_X,
-            width: 20.0,
-            height: 50.0,
+            bottom_size: 50.0,
+            top_size: None,
         });
         world.update(0.0);
         assert_eq!(world.status, GameStatus::GameOver);
@@ -213,8 +213,8 @@ mod tests {
         }
         world.obstacles.push(Obstacle {
             x: PLAYER_X,
-            width: 20.0,
-            height: 30.0,
+            bottom_size: 30.0,
+            top_size: None,
         });
         world.update(0.0);
         assert_eq!(world.status, GameStatus::Running);
