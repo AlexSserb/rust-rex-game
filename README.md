@@ -15,7 +15,10 @@ This is a Cargo workspace with two crates:
   fully unit-tested in isolation.
 - `crates/rust-rex-game` — the playable binary. Uses [`macroquad`](https://docs.rs/macroquad)
   for the window, drawing and keyboard input, and drives
-  `rust-rex-core`'s `World::update` once per frame.
+  `rust-rex-core`'s `World::update` once per frame. The player sprite lives
+  at `crates/rust-rex-game/assets/player.png` and is embedded into the
+  binary at compile time (`include_bytes!`), so the game renders it
+  correctly no matter what directory it's launched from.
 
 ## Play
 

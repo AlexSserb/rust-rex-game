@@ -8,18 +8,31 @@ use rust_rex_core::{GameStatus, World, PLAYER_X};
 
 const BACKGROUND: Color = Color::new(0.97, 0.97, 0.95, 1.0);
 const GROUND_COLOR: Color = Color::new(0.2, 0.2, 0.2, 1.0);
-const PLAYER_COLOR: Color = Color::new(0.15, 0.15, 0.15, 1.0);
 const OBSTACLE_COLOR: Color = Color::new(0.16, 0.4, 0.16, 1.0);
 const TEXT_COLOR: Color = Color::new(0.15, 0.15, 0.15, 1.0);
 
 const GROUND_TICK_SPACING: f32 = 40.0;
 const GROUND_TICK_WIDTH: f32 = 18.0;
 
-pub fn draw(world: &World, best_km: f32, screen_width: f32, screen_height: f32, ground_y: f32) {
+/// The player sprite is drawn taller than its collision box (which stays a
+/// tight rectangle for fair, predictable collisions) so the gear-dino
+/// artwork isn't squashed to fit it. `PLAYER_SPRITE_SCALE` controls how much
+/// bigger, anchored to the same ground contact point and horizontal center
+/// as the hitbox.
+const PLAYER_SPRITE_SCALE: f32 = 1.35;
+
+pub fn draw(
+    world: &World,
+    player_texture: &Texture2D,
+    best_km: f32,
+    screen_width: f32,
+    screen_height: f32,
+    ground_y: f32,
+) {
     clear_background(BACKGROUND);
 
     draw_ground(world, screen_width, ground_y);
-    draw_player(world, ground_y);
+    draw_player(world, player_texture, ground_y);
     draw_obstacles(world, ground_y);
     draw_hud(world, best_km, screen_width);
 
@@ -48,20 +61,23 @@ fn draw_ground(world: &World, screen_width: f32, ground_y: f32) {
     }
 }
 
-fn draw_player(world: &World, ground_y: f32) {
+fn draw_player(world: &World, player_texture: &Texture2D, ground_y: f32) {
     let body = world.player.bounds(PLAYER_X, ground_y);
-    draw_rectangle(body.x, body.y, body.w, body.h, PLAYER_COLOR);
 
-    // A small "head" block gives the silhouette a bit of character without
-    // needing any image assets.
-    let head_w = body.w * 0.45;
-    let head_h = body.h * 0.35;
-    draw_rectangle(
-        body.x + body.w - head_w * 0.6,
-        body.y - head_h * 0.6,
-        head_w,
-        head_h,
-        PLAYER_COLOR,
+    let draw_h = body.h * PLAYER_SPRITE_SCALE;
+    let draw_w = draw_h * (player_texture.width() / player_texture.height());
+    let center_x = body.x + body.w / 2.0;
+    let ground_contact = body.y + body.h;
+
+    draw_texture_ex(
+        player_texture,
+        center_x - draw_w / 2.0,
+        ground_contact - draw_h,
+        WHITE,
+        DrawTextureParams {
+            dest_size: Some(vec2(draw_w, draw_h)),
+            ..Default::default()
+        },
     );
 }
 
